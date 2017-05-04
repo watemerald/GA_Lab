@@ -1,6 +1,33 @@
 import parameters
 import random
 
+def crossover(parent_a, parent_b,
+             p_c = parameters.pc,
+             type = parameters.crossover):
+    '''Crossover selection
+
+    Args:
+        parent_a: The first parent.
+        parent_b: The second parent.
+        p_m: The mutation probability.
+        type: The type of crossover ('1', '2', 'n')
+
+    Returns:
+        The resulting children
+    '''
+
+    if type == '1':
+        return point_crossover(parent_a, parent_b, p_c)
+    if type == '2':
+        return two_point_crossover(parent_a, parent_b, p_c)
+
+    raise ValueError("Unknown crossover type type {}".format(type))
+
+
+    #  crossover = '1'
+    # crossover = '2'
+    # crossover = 'n'
+
 def point_crossover(parent_a, parent_b, p_c = parameters.pc):
     '''Point crossover
 
