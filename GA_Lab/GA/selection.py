@@ -1,6 +1,6 @@
 import random
 import parameters
-from utils import similarity
+from utils import similarity, bin_to_double
 from crossover import crossover
 from mutation import mutation
 
@@ -16,11 +16,12 @@ def form_children(population,
     Returns:
         The resulting children
     '''
-    parent_A = random.choice(population)
+    import pdb; pdb.set_trace();
+    parent_a = random.choice(population)
 
     crowding_selection_group = random.sample(population, c_s)
 
-    parent_b = max(crowding_selection_group, key=similarity)
+    parent_b = max(crowding_selection_group, key= lambda x: similarity(parent_a, x))
 
     child_a, child_b = crossover(parent_a, parent_b)
 
@@ -49,15 +50,16 @@ def worst_among_most_similar(population,
     #
     # crowding_selection_group = random.sample(population, s)
 
+
     cf_groups = []
     for i in range(c_f):
         cf_groups.append(random.sample(population, s))
 
     most_similar = []
     for group in cf_groups:
-        most_similar.append(max(group, key=similarity))
+        most_similar.append(max(group, key=lambda x: similarity(child, x)))
 
-    worst = min(most_similar, key=goal_function)
+    worst = min(most_similar, key=lambda x: goal_function(bin_to_double(x)))
 
     population.remove(worst)
 

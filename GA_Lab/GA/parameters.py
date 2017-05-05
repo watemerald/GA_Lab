@@ -1,6 +1,7 @@
 
 # Number of chromosomes in the poputaion
-N = 500
+# N = 500
+N = 100
 
 # Probability of mutation
 pm = 0.1
@@ -26,14 +27,14 @@ mutation = '1-point'
 # mutation = 'density'
 
 # Which distance measure to use
-distance_measure = 'euclidian'
+distance_measure = 'euclidean'
 # distance_measure = 'hamming'
 
 # Crowding Selection goup size [0.01, 0.15]
-cs = int(0.01*N)
+cs = int(0.15*N)
 
 # Crowding factor [1,4]
 cf = 3
 
 # Crowding subpoputaion size [0.01, 0.15]*N
-s = int(0.02 * N)
+s = int(0.15 * N)
