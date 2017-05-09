@@ -4,10 +4,12 @@ from mutation import mutation
 from crossover import crossover
 from selection import *
 from utils import *
-import Deb1
+from TestFunctions import Deb1
 import logging
+import plotting
 import pandas as pd
 import numpy as np
+
 from bokeh.plotting import figure, output_file, show
 
 __number_of_runs = 10
@@ -82,21 +84,6 @@ def main():
 
             prev_average = current_average
 
-        # pool_values = {}
-        # for (k, chromosome) in enumerate(pool):
-        #     db = bin_to_double(chromosome)
-        #     pool_values[k] = (chromosome.to01(), db, goal_function(db))
-            # pool_values.append()
-
-        # pool_values = pd.DataFrame(list(pool_values.items()), columns=('encoded', 'decoded', 'fitness'))
-        # pool_values = pd.DataFrame.from_dict(pool_values, orient='index')
-        # pool_values.columns = ('encoded', 'decoded', 'fitness')
-
-        # import pdb; pdb.set_trace()
-        # pool_values
-
-        # pool_values.to_csv('pv.csv', sep='\t')
-
         peaks = find_peaks_2(spv)
 
         # import pdb; pdb.set_trace()
@@ -113,6 +100,8 @@ def main():
         DA = distance_accuracy(spv, peak_values)
 
         logger.debug('Run {} - NFE: {} NP: {} PR: {} PA: {} DA {}'.format(i, goal_function.calls, len(peaks), PR, PA, DA))
+
+        plotting.plot(goal_vector, spv.decoded, spv.fitness)
 
 def cycle(pool, gf):
     child_a, child_b = form_children(pool)
