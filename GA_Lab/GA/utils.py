@@ -2,6 +2,7 @@ from parameters import distance_measure
 from scipy.spatial.distance import euclidean, hamming
 import struct
 from bitarray import bitarray
+import pandas as pd
 
 
 def similarity(a,b, d_m = distance_measure):
@@ -62,5 +63,60 @@ def find_peaks(pool, goal_function, sigma=0.05):
                 break
         if not found:
             seeds.append(chromosome)
-            
+
     return seeds
+
+def find_peaks_2(pool_values, sigma=0.05):
+    # seeds = pd.DataFrame(columns=('encoded', 'decoded', 'fitness'))
+
+    seeds = []
+
+    best_to_worst = pool_values.sort_values(by='fitness', ascending=False)
+
+    for chromosome in best_to_worst.itertuples():
+        found = False
+        for seed in seeds:
+            if abs(euclidean(chromosome.decoded, seed.decoded) <= sigma):
+                found = True
+                break
+        if not found:
+
+            # import pdb; pdb.set_trace()
+
+            seeds.append(chromosome)
+
+
+    # import pdb; pdb.set_trace()
+    return pd.DataFrame.from_records(seeds).drop(0,1)
+
+def peak_accuracy(pool_values, peaks):
+    def diff(peak, value):
+        # closest_value = pool_values.ix[
+        #     euclidean(pool_values['decoded'], peak).idxmin()
+        #     ]
+        closest_value = pool_values.ix[
+            pool_values['decoded'].apply(lambda x: euclidean(x, peak)).idxmin()
+        ]
+        return abs(value-closest_value['fitness'])
+
+    ret = sum([diff(peak, value) for (peak, value) in peaks])
+
+    # import pdb; pdb.set_trace()
+    return ret
+
+def distance_accuracy(pool_values, peaks):
+    def dist(peak, value):
+        # closest_value = pool_values.ix[
+        #     euclidean(pool_values['decoded'], peak).idxmin()
+        #     ]
+        closest_value = pool_values.ix[
+            pool_values['decoded'].apply(lambda x: euclidean(x, peak)).idxmin()
+        ]
+        return euclidean(peak, closest_value['decoded'])
+
+    ret = sum([dist(peak, value) for peak, value in peaks])
+
+    return ret
+
+def peak_value_pairs(peak_list, goal_function):
+    return [(p, goal_function(*p)) for p in peak_list]
