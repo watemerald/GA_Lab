@@ -20,6 +20,8 @@ def crossover(parent_a, parent_b,
         return point_crossover(parent_a, parent_b, p_c)
     if type == '2':
         return two_point_crossover(parent_a, parent_b, p_c)
+    if type == 'n':
+        return n_point_crossover(paernt_a, parent_b, p_c)
 
     raise ValueError("Unknown crossover type type {}".format(type))
 
@@ -39,17 +41,20 @@ def point_crossover(parent_a, parent_b, p_c = parameters.pc):
     Returns:
         The resulting children
     '''
+    coded_a = parent_a.encoded
+    coded_b = parent_b.encoded
+
 
     if random.random() < p_c:
-        length = len(parent_a)
+        length = len(coded_a)
         crossover_point = random.randrange(length)
-        child_a = parent_a[:crossover_point] + parent_b[crossover_point:]
+        child_a = coded_a[:crossover_point] + coded_b[crossover_point:]
 
-        child_b = parent_b[:crossover_point] + parent_a[crossover_point:]
+        child_b = coded_b[:crossover_point] + coded_a[crossover_point:]
 
         return child_a, child_b
 
-    return parent_a, parent_b
+    return coded_a, coded_b
 
 def two_point_crossover(parent_a, parent_b, p_c = parameters.pc):
     '''2 Point crossover
@@ -62,15 +67,45 @@ def two_point_crossover(parent_a, parent_b, p_c = parameters.pc):
     Returns:
         The resulting children
     '''
+    coded_a = parent_a.encoded
+    coded_b = parent_b.encoded
+
     if random.random() < p_c:
-        length = len(parent_a)
+        length = len(coded_a)
         crossover_point_1 = random.randrange(length)
         crossover_point_2 = random.randrange(crossover_point_1, length)
 
-        child_a = parent_a[:crossover_point1] + parent_b[crossover_point_1:crossover_point_2] + parent_a[crossover_point_2:]
+        child_a = coded_a[:crossover_point1] + coded_b[crossover_point_1:crossover_point_2] + coded_a[crossover_point_2:]
 
-        child_b = parent_b[:crossover_point1] + parent_a[crossover_point_1:crossover_point_2] + parent_b[crossover_point_2:]
+        child_b = coded_b[:crossover_point1] + coded_a[crossover_point_1:crossover_point_2] + coded_b[crossover_point_2:]
 
         return child_a, child_b
 
-    return parent_a, parent_b
+    return coded_a, coded_b
+
+def n_point_crossover(parent_a, parent_b, p_c = parameters.pc):
+    coded_a = parent_a.encoded
+    coded_b = parent_b.encoded
+
+    def mask_digit():
+        if random.random() < p_c:
+            return 0
+        else:
+            return 1
+
+    length = len(coded_a)
+
+    mask = [mask_digit() for _ in range(length)]
+
+    child_a = []
+    child_b = []
+
+    for (i, m) in enumerate(mask):
+        if m == 0:
+            child_a[i] = coded_a[i]
+            child_b[i] = coded_b[i]
+        if m == 1:
+            child_a[i] = coded_b[i]
+            child_b[i] = coded_a[i]
+
+    return child_a, child_b

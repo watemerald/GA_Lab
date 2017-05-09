@@ -1,13 +1,13 @@
 
 # Number of chromosomes in the poputaion
 # N = 500
-N = 200
+N = 500
 
 # Probability of mutation
 pm = 0.1
 
 # Probability of crossover
-pc = 0.05
+pc = 0.1
 
 # Which coding to use
 coding = 'bin'
@@ -37,4 +37,4 @@ cs = int(0.15*N)
 cf = 3
 
 # Crowding subpoputaion size [0.01, 0.15]*N
-s = int(0.15 * N)
+s = int(0.01 * N)
