@@ -16,7 +16,7 @@ def form_children(population,
     Returns:
         The resulting children
     '''
-    import pdb; pdb.set_trace();
+    # import pdb; pdb.set_trace();
     parent_a = random.choice(population)
 
     crowding_selection_group = random.sample(population, c_s)

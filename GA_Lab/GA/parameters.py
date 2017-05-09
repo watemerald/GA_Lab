@@ -1,7 +1,7 @@
 
 # Number of chromosomes in the poputaion
 # N = 500
-N = 100
+N = 200
 
 # Probability of mutation
 pm = 0.1

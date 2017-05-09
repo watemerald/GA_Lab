@@ -41,11 +41,11 @@ def point_crossover(parent_a, parent_b, p_c = parameters.pc):
     '''
 
     if random.random() < p_c:
-        len = parent_a.length()
-        crossover_point = random.randrange(len)
-        child_a = a[:crossover_point] + b[crossover_point:]
+        length = len(parent_a)
+        crossover_point = random.randrange(length)
+        child_a = parent_a[:crossover_point] + parent_b[crossover_point:]
 
-        child_b = b[:crossover_point] + a[crossover_point:]
+        child_b = parent_b[:crossover_point] + parent_a[crossover_point:]
 
         return child_a, child_b
 
@@ -63,13 +63,13 @@ def two_point_crossover(parent_a, parent_b, p_c = parameters.pc):
         The resulting children
     '''
     if random.random() < p_c:
-        len = parent_a.length()
-        crossover_point_1 = random.randrange(len)
-        crossover_point_2 = random.randrange(crossover_point_1, len)
+        length = len(parent_a)
+        crossover_point_1 = random.randrange(length)
+        crossover_point_2 = random.randrange(crossover_point_1, length)
 
-        child_a = a[:crossover_point1] + b[crossover_point_1:crossover_point_2] + a[crossover_point_2:]
+        child_a = parent_a[:crossover_point1] + parent_b[crossover_point_1:crossover_point_2] + parent_a[crossover_point_2:]
 
-        child_b = b[:crossover_point1] + a[crossover_point_1:crossover_point_2] + b[crossover_point_2:]
+        child_b = parent_b[:crossover_point1] + parent_a[crossover_point_1:crossover_point_2] + parent_b[crossover_point_2:]
 
         return child_a, child_b
 

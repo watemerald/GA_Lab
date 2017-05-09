@@ -14,7 +14,9 @@ def compute(*args):
     for arg in args:
         result = result + math.sin(5 * math.pi * arg) ** 6
 
-    result = result/ len(args)
+    result = result / len(args)
+
+    # import pdb; pdb.set_trace()
 
     return result
 

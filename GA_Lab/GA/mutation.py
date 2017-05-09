@@ -36,9 +36,9 @@ def point_mutation(bits, p_m = parameters.pm):
     Returns:
         The mutated bitarray
     '''
-    if random.random < p_m:
-        len = bits.length()
-        mutating_bit = random.randrange(len)
+    if random.random() < p_m:
+        length = len(bits)
+        mutating_bit = random.randrange(length)
 
         bits[mutating_bit] = not bits[mutating_bit]
 
@@ -54,8 +54,8 @@ def density_mutation(bits, p_m = parameters.pm):
     Returns:
         The mutated bitarray
     '''
-    len = bits.length
-    for i in range(len):
+    length = len(bits)
+    for i in range(length):
         if random.random < p_m:
             bits[i] = not bits[i]
 
