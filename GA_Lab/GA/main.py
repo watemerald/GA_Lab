@@ -40,7 +40,7 @@ def main():
     starting_pool_values = {}
     for (k, chromosome) in enumerate(starting_pool):
         db = bin_to_double(chromosome)
-        starting_pool_values[k] = (chromosome.to01(), db, goal_function(db))
+        starting_pool_values[k] = (chromosome, db, goal_function(db))
         # starting_pool_values.append()
 
     # starting_pool_values = pd.DataFrame(list(starting_pool_values.items()), columns=('encoded', 'decoded', 'fitness'))

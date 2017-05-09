@@ -3,6 +3,9 @@
 # N = 500
 N = 500
 
+# Number of dimensions of goal function
+ndim = 1
+
 # Probability of mutation
 pm = 0.1
 

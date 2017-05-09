@@ -1,8 +1,10 @@
-from parameters import distance_measure
+from parameters import distance_measure, ndim, coding
 from scipy.spatial.distance import euclidean, hamming
+from sympy.combinatorics.graycode import bin_to_gray, gray_to_bin
 import struct
 from bitarray import bitarray
 import pandas as pd
+import numpy as np
 
 
 def similarity(a,b, d_m = distance_measure):
@@ -27,7 +29,7 @@ def double_to_bin(f):
     '''
     s = struct.pack('d', f)
     strep = str(bin(struct.unpack('q', s)[0]))[2:]
-    return bitarray(strep.rjust(62, '0'))
+    return strep.rjust(62, '0')
 
 def bin_to_double(b):
     '''Converts a binary number to a double
@@ -40,6 +42,30 @@ def bin_to_double(b):
     f2 = struct.pack('q', k)
 
     return struct.unpack('d', f2)[0]
+
+double_to_bin = np.vectorize(double_to_bin)
+bin_to_double = np.vectorize(bin_to_double)
+bin_to_gray = np.vectorize(bin_to_gray)
+gray_to_bin = np.vectorize(gray_to_bin)
+
+def encode(f, dim=ndim, coding=coding):
+    if coding == 'bin':
+        return double_to_bin(f)
+    elif coding == 'gray':
+        return bin_to_gray(double_to_bin(f))
+    else:
+        raise ValueError("Unknown number coding {}".
+            format(coding))
+
+def decode(f, dim=ndim, coding=coding):
+    if coding == 'bin':
+        return bin_to_double(f)
+    elif coding == 'gray':
+        # return bin_to_gray(double_to_bin(f))
+        return bin_to_double(gray_to_bin(f))
+    else:
+        raise ValueError("Unknown number coding {}".
+            format(coding))
 
 def average_fitness(pool, goal_function):
     return sum([goal_function(bin_to_double(p)) for p in pool])/ len(pool)
