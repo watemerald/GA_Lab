@@ -28,7 +28,7 @@ def form_children(population,
     # import pdb; pdb.set_trace()
     # pool_values['decoded'].apply(lambda x: euclidean(x, peak)).idxmin()
     parent_b = crowding_selection_group.ix[
-        crowding_selection_group['encoded'].apply(lambda x: similarity(parent_a.encoded, x)).idxmin()
+        crowding_selection_group['decoded'].apply(lambda x: similarity(parent_a.decoded, x)).idxmin()
     ]
     # parent_b.orient('index')
 
