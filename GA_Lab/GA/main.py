@@ -39,8 +39,8 @@ def main():
 
     starting_pool_values = {}
     for (k, chromosome) in enumerate(starting_pool):
-        db = bin_to_double(chromosome)
-        starting_pool_values[k] = (chromosome, db, goal_function(db))
+        db = decode(chromosome)
+        starting_pool_values[k] = (''.join(chromosome), db, goal_function(*db))
         # starting_pool_values.append()
 
     # starting_pool_values = pd.DataFrame(list(starting_pool_values.items()), columns=('encoded', 'decoded', 'fitness'))
@@ -93,25 +93,26 @@ def main():
         # Evaluation parameters:
         NFE = goal_function.calls
         NP = len(peaks)
-        PR = NP / Deb1.get_number_of_global_maxima(1)
+        PR = NP / Deb1.get_number_of_global_maxima(ndim)
 
-        peak_values = peak_value_pairs(Deb1.get_local_maxima_list(1), goal_function)
+        peak_values = peak_value_pairs(Deb1.get_local_maxima_list(ndim), goal_function)
         PA = peak_accuracy(spv, peak_values)
         DA = distance_accuracy(spv, peak_values)
 
         logger.debug('Run {} - NFE: {} NP: {} PR: {} PA: {} DA {}'.format(i, goal_function.calls, len(peaks), PR, PA, DA))
 
-        plotting.plot(goal_vector, spv.decoded, spv.fitness)
+        if ndim==1:
+            plotting.plot(goal_vector, spv.decoded, spv.fitness)
 
 def cycle(pool, gf):
     child_a, child_b = form_children(pool)
 
-    dba = bin_to_double(child_a)
-    child_a = pd.Series([child_a, dba, gf(dba)])
+    dba = decode(child_a)
+    child_a = pd.Series([child_a, dba, gf(*dba)])
     child_a.set_axis(0, ('encoded', 'decoded', 'fitness'))
 
-    dbb = bin_to_double(child_b)
-    child_b = pd.Series([child_b, dbb, gf(dbb)])
+    dbb = decode(child_b)
+    child_b = pd.Series([child_b, dbb, gf(*dbb)])
     child_b.set_axis(0, ('encoded', 'decoded', 'fitness'))
 
 
@@ -122,7 +123,7 @@ def cycle(pool, gf):
 
 def population_dict(pool, goal_function):
     return {
-    a.to01(): goal_function(bin_to_double(a)) for a in pool
+    a.to01(): goal_function(decode(a)) for a in pool
     }
 
 if __name__ == '__main__':

@@ -58,6 +58,9 @@ def encode(f, dim=ndim, coding=coding):
             format(coding))
 
 def decode(f, dim=ndim, coding=coding):
+    if ndim > 1:
+        if isinstance(f, str):
+            f = [f[i:i+62] for i in range(ndim)]
     if coding == 'bin':
         return bin_to_double(f)
     elif coding == 'gray':
