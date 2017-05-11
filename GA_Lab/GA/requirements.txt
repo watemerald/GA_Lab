@@ -1,0 +1,10 @@
+bitarray
+bokeh
+seaborn
+decorator
+matplotlib
+numpy
+pandas
+scipy
+six
+sympy
