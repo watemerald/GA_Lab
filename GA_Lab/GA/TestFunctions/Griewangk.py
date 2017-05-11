@@ -5,12 +5,14 @@ from .counted import counted
 @counted
 def compute(*args):
     result = 0
-    for arg in args:
-        result = result + math.sin(5 * math.pi * arg) ** 6
+    product = 1
 
-    result = result / len(args)
+    for (arg, i) in enumerate(args, 1):
+        result = result + arg ** 2 / 4000
+        product = product * math.cos(arg/ math.sqrt(i))
 
-    # import pdb; pdb.set_trace()
+    result = result - product + 1
+    result = 10 - result
 
     return result
 
@@ -22,10 +24,10 @@ def get_local_maxima_list(dimensionality):
     return list(itertools.product(*a))
 
 def get_global_maxima_list(dimensionality):
-    return get_local_maxima_list(dimensionality)
+    return list(tuple(itertools.repeat([0.1], dimensionality)))
 
 def get_number_of_local_maxima(dimensionality):
-    return 0
+    return 10 ** dimensionality + 1
 
 def get_number_of_global_maxima(dimensionality):
-    return 5 ** dimensionality
+    return 1

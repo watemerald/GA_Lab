@@ -10,8 +10,6 @@ def compute(*args):
 
     result = result / len(args)
 
-    # import pdb; pdb.set_trace()
-
     return result
 
 def get_local_maxima_list(dimensionality):

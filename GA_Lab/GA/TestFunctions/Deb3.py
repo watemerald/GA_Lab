@@ -6,7 +6,7 @@ from .counted import counted
 def compute(*args):
     result = 0
     for arg in args:
-        result = result + math.sin(5 * math.pi * arg) ** 6
+        result = result + math.sin(5 * math.pi * (arg**0.75 - 0.05)) ** 6
 
     result = result / len(args)
 
@@ -15,7 +15,7 @@ def compute(*args):
     return result
 
 def get_local_maxima_list(dimensionality):
-    arguments = [0.1, 0.3, 0.5, 0.7, 0.9]
+    arguments = [0.080, 0.247, 0.451, 0.681, 0.934]
 
     a = tuple(itertools.repeat(arguments, dimensionality))
 
