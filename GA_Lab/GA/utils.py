@@ -95,7 +95,7 @@ def find_peaks(pool, goal_function, sigma=0.05):
 
     return seeds
 
-def find_peaks_2(pool_values, sigma=0.05):
+def find_peaks_2(pool_values, sigma=0.01):
     # seeds = pd.DataFrame(columns=('encoded', 'decoded', 'fitness'))
 
     seeds = []

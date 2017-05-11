@@ -9,6 +9,7 @@ import logging
 import plotting
 import pandas as pd
 import numpy as np
+import time
 
 from bokeh.plotting import figure, output_file, show
 
@@ -53,6 +54,7 @@ def main():
     # starting_average = average_fitness(starting_pool, goal_function)
 
     for i in range(__number_of_runs):
+        starting_time = time.time()
         # pool = copy.copy(starting_pool)
         spv = starting_pool_values.copy()
         prev_average = starting_average
@@ -99,7 +101,8 @@ def main():
         PA = peak_accuracy(spv, peak_values)
         DA = distance_accuracy(spv, peak_values)
 
-        logger.debug('Run {} - NFE: {} NP: {} PR: {} PA: {} DA {}'.format(i, goal_function.calls, len(peaks), PR, PA, DA))
+        ending_time = time.time()
+        logger.debug('Run {} - NFE: {} NP: {} PR: {} PA: {} DA {} Time {}'.format(i, goal_function.calls, len(peaks), PR, PA, DA, (ending_time-starting_time)*1000.0))
 
         if ndim==1:
             plotting.plot(goal_vector, spv.decoded, spv.fitness)
@@ -108,11 +111,17 @@ def cycle(pool, gf):
     child_a, child_b = form_children(pool)
 
     dba = decode(child_a)
-    child_a = pd.Series([child_a, dba, gf(*dba)])
+    if ndim==1:
+        child_a = pd.Series([child_a, dba, gf(dba)])
+    else:
+        child_a = pd.Series([child_a, dba, gf(*dba)])
     child_a.set_axis(0, ('encoded', 'decoded', 'fitness'))
 
     dbb = decode(child_b)
-    child_b = pd.Series([child_b, dbb, gf(*dbb)])
+    if ndim==1:
+        child_b = pd.Series([child_b, dbb, gf(dbb)])
+    else:
+        child_b = pd.Series([child_b, dbb, gf(*dbb)])
     child_b.set_axis(0, ('encoded', 'decoded', 'fitness'))
 
 
