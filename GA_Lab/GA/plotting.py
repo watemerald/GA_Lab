@@ -8,5 +8,5 @@ def plot(func, dots, values, min=0, max=1):
     p.line(x, func(x))
     p.scatter(dots, values, fill_color='red')
 
-    show(p)
+    # show(p)
     save(p)

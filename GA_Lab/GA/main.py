@@ -10,10 +10,11 @@ import plotting
 import pandas as pd
 import numpy as np
 import time
+import parameters
 
 from bokeh.plotting import figure, output_file, show
 
-__number_of_runs = 10
+__number_of_runs = 3
 __max_finess_evaluations = 20_000_000
 __sigma = 0.0001
 
@@ -29,11 +30,16 @@ ch. setFormatter(formatter)
 
 logger.addHandler(ch)
 
+df = pd.DataFrame()
+data_file = 'data.csv'
 
 def main():
+    global df
+
     starting_pool = list(generate_population())
 
-    goal_function = Deb1.compute
+    optimising_goal = Deb1
+    goal_function = optimising_goal.compute
 
     goal_vector = np.vectorize(goal_function)
     convert_vector = np.vectorize(bin_to_double)
@@ -102,10 +108,39 @@ def main():
         DA = distance_accuracy(spv, peak_values)
 
         ending_time = time.time()
-        logger.debug('Run {} - NFE: {} NP: {} PR: {} PA: {} DA {} Time {}'.format(i, goal_function.calls, len(peaks), PR, PA, DA, (ending_time-starting_time)*1000.0))
+
+        run_time = ending_time - starting_time
+
+        datum = {
+            'N': parameters.N,
+            'dimensions': parameters.ndim,
+            'p_m': parameters.pm,
+            'p_c': parameters.pc,
+            'coding': parameters.coding,
+            'crossover': parameters.crossover,
+            'mutation': parameters.mutation,
+            'distance_measure': parameters.distance_measure,
+            'crowding_selection': parameters.cs,
+            'crowding_factor': parameters.cf,
+            'subpopulation_size': parameters.s,
+            'function_name': optimising_goal.__name__,
+            'run_number': i,
+            'NFE': NFE,
+            'NP': NP,
+            'PR': PR,
+            'PA': PA,
+            'DA': DA,
+            'run_time': run_time
+        }
+        # df = df.append([optimising_goal.__name__, NFE, NP, PR, PA, DA, run_time])
+        df = df.append(datum, ignore_index=True)
+
+        # logger.debug('Run {} - NFE: {} NP: {} PR: {} PA: {} DA {} Time {}'.format(i, goal_function.calls, len(peaks), PR, PA, DA, (ending_time-starting_time)*1000.0))
 
         if ndim==1:
             plotting.plot(goal_vector, spv.decoded, spv.fitness)
+
+    df.to_csv(data_file)
 
 def cycle(pool, gf):
     child_a, child_b = form_children(pool)
