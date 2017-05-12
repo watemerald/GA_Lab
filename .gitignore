@@ -56,3 +56,5 @@ docs/_build/
 
 # PyBuilder
 target/
+
+GA_Lab/GA/Images/*
