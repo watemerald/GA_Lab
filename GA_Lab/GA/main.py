@@ -10,7 +10,11 @@ import plotting
 import pandas as pd
 import numpy as np
 import time
-import parameters
+from itertools import product
+import os.path
+from uuid import uuid1
+# import parameters
+from parameters_new import parameters
 
 from bokeh.plotting import figure, output_file, show
 
@@ -18,27 +22,40 @@ __number_of_runs = 3
 __max_finess_evaluations = 20_000_000
 __sigma = 0.0001
 
-logger = logging.getLogger('ga_main')
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 
 formatter = logging.Formatter('%(name)s: %(levelname)s - %(message)s')
 
-ch. setFormatter(formatter)
+ch.setFormatter(formatter)
 
+textlog = logging.FileHandler('info.log')
+textlog.setFormatter(formatter)
+
+logger.addHandler(textlog)
 logger.addHandler(ch)
 
-df = pd.DataFrame()
-data_file = 'data.csv'
+ndim = parameters.ndim
 
-def main():
+data_file = 'data.csv'
+if not os.path.isfile(data_file):
+    with open(data_file, 'w+') as f:
+        pass
+
+# df = pd.DataFrame.from_csv(data_file)
+df = pd.DataFrame()
+
+def main(optimising_goal=Deb1):
+    logger.info('''Starting the main loop with parameters {} \n
+    optimising function {}'''.format(parameters, optimising_goal.__name__))
     global df
 
     starting_pool = list(generate_population())
 
-    optimising_goal = Deb1
+    # optimising_goal = Deb1
     goal_function = optimising_goal.compute
 
     goal_vector = np.vectorize(goal_function)
@@ -61,6 +78,7 @@ def main():
 
     for i in range(__number_of_runs):
         starting_time = time.time()
+        logger.info('Started run number {} at starting time {}'.format(i, starting_time))
         # pool = copy.copy(starting_pool)
         spv = starting_pool_values.copy()
         prev_average = starting_average
@@ -70,7 +88,7 @@ def main():
         goal_function.calls = 0
         # logging.warn('Goal function calls {}'.format(goal_function.calls))
         while True:
-            spv = cycle(spv, goal_function)
+            spv = cycle(spv, goal_function, parameters.method)
 
             if goal_function.calls > __max_finess_evaluations:
                 break
@@ -80,7 +98,7 @@ def main():
             current_max = spv.fitness.max()
             # current_max = goal_function(bin_to_double(max_fitness(pool, goal_function)))
             # print("Average fitness: {} \t Max fitness: {}".format(current_average, current_max))
-            if abs(current_average - prev_average) <= __sigma:
+            if abs(current_average - prev_average) <= parameters.sigma:
                 # import pdb; pdb.set_trace()
                 average_close = True
                 average_closing = average_closing + 1
@@ -101,15 +119,17 @@ def main():
         # Evaluation parameters:
         NFE = goal_function.calls
         NP = len(peaks)
-        PR = NP / Deb1.get_number_of_global_maxima(ndim)
+        PR = NP / optimising_goal.get_number_of_global_maxima(ndim)
 
-        peak_values = peak_value_pairs(Deb1.get_local_maxima_list(ndim), goal_function)
+        peak_values = peak_value_pairs(optimising_goal.get_local_maxima_list(ndim), goal_function)
         PA = peak_accuracy(spv, peak_values)
         DA = distance_accuracy(spv, peak_values)
 
         ending_time = time.time()
 
         run_time = ending_time - starting_time
+
+        logger.info('Finished run number {} at ending time {}'.format(i, ending_time))
 
         datum = {
             'N': parameters.N,
@@ -130,25 +150,28 @@ def main():
             'PR': PR,
             'PA': PA,
             'DA': DA,
-            'run_time': run_time
+            'run_time': run_time,
+            'method': parameters.method
         }
         # df = df.append([optimising_goal.__name__, NFE, NP, PR, PA, DA, run_time])
         df = df.append(datum, ignore_index=True)
+        df.to_csv(data_file)
+
 
         # logger.debug('Run {} - NFE: {} NP: {} PR: {} PA: {} DA {} Time {}'.format(i, goal_function.calls, len(peaks), PR, PA, DA, (ending_time-starting_time)*1000.0))
-
         if ndim==1:
-            plotting.plot(goal_vector, spv.decoded, spv.fitness)
+            plotting.plot(goal_vector, spv.decoded, spv.fitness, '{} - {}{}.jpg'.format(optimising_goal.__name__, i, uuid1()))
 
     df.to_csv(data_file)
 
-def cycle(pool, gf):
+def cycle(pool, gf, method='worst_among_most_similar'):
     child_a, child_b = form_children(pool)
 
     dba = decode(child_a)
     if ndim==1:
         child_a = pd.Series([child_a, dba, gf(dba)])
     else:
+        import pdb; pdb.set_trace()
         child_a = pd.Series([child_a, dba, gf(*dba)])
     child_a.set_axis(0, ('encoded', 'decoded', 'fitness'))
 
@@ -159,11 +182,34 @@ def cycle(pool, gf):
         child_b = pd.Series([child_b, dbb, gf(*dbb)])
     child_b.set_axis(0, ('encoded', 'decoded', 'fitness'))
 
-
-    pool_1 = worst_among_most_similar(pool, child_a, gf)
-    pool_2 = worst_among_most_similar(pool, child_b, gf)
+    if method == 'worst_among_most_similar':
+        pool_1 = worst_among_most_similar(pool, child_a, gf)
+        pool_2 = worst_among_most_similar(pool_1, child_b, gf)
+    if method == 'most_similar_among_worst':
+        pool_1 = most_similar_among_worst(pool, child_a, gf)
+        pool_2 = most_similar_among_worst(pool_1, child_b, gf)
 
     return pool_2
+
+def parameter_generation():
+    n = [500]
+    ndim = [1,2,3,5]
+    pm = [0.1, 0.2]
+    pc = [0.1, 0.2]
+    coding = ['bin']
+    mutation = ['1-point']
+    crossover = ['1']
+    distance_measure = ['euclidean']
+    cs = [0.15]
+    cf = [3,4]
+    s = [0.01]
+
+    method = ['worst_among_most_similar', 'most_similar_among_worst']
+
+    return list(product(n, ndim, pm, pc, coding, mutation, crossover, distance_measure, cs, cf, s, method))
+
+
+
 
 def population_dict(pool, goal_function):
     return {
@@ -171,4 +217,22 @@ def population_dict(pool, goal_function):
     }
 
 if __name__ == '__main__':
-    main()
+    params_to_test = parameter_generation()
+
+    for (n, ndim, pm, pc, coding, mutation, crossover, distance_measure, cs, cf, s, method) if params_to_test:
+        parameters.N = n
+        parameters.ndim = ndim
+        parameters.pm = pm
+        parameters.pc = pc
+        parameters.coding = coding
+        parameters.mutation = mutation
+        parameters.distance_measure = distance_measure
+        parameters.cs = cs
+        parameters.cf = cf
+        parameters.s = s
+        parameters.method = method
+
+        main()
+
+
+    # main()

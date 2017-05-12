@@ -1,4 +1,4 @@
-import parameters
+from parameters_new import parameters
 import random
 import copy
 
@@ -43,7 +43,6 @@ def point_mutation(bits, p_m = parameters.pm):
         mutating_bit = random.randrange(length)
 
         cat[mutating_bit] = str(1-int(bits[mutating_bit]))
-    # import pdb; pdb.set_trace()
     return ''.join(cat)
 
 def density_mutation(bits, p_m = parameters.pm):

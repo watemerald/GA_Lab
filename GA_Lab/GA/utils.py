@@ -1,4 +1,5 @@
-from parameters import distance_measure, ndim, coding
+# from parameters import distance_measure, ndim, coding
+from parameters_new import parameters
 from scipy.spatial.distance import euclidean, hamming
 from sympy.combinatorics.graycode import bin_to_gray, gray_to_bin
 import struct
@@ -7,7 +8,7 @@ import pandas as pd
 import numpy as np
 
 
-def similarity(a,b, d_m = distance_measure):
+def similarity(a,b, d_m = parameters.distance_measure):
     # import pdb; pdb.set_trace()
     if d_m == 'euclidean':
         if isinstance(a, str):
@@ -48,7 +49,7 @@ bin_to_double = np.vectorize(bin_to_double)
 bin_to_gray = np.vectorize(bin_to_gray)
 gray_to_bin = np.vectorize(gray_to_bin)
 
-def encode(f, dim=ndim, coding=coding):
+def encode(f, dim=parameters.ndim, coding=parameters.coding):
     if coding == 'bin':
         return double_to_bin(f)
     elif coding == 'gray':
@@ -57,10 +58,10 @@ def encode(f, dim=ndim, coding=coding):
         raise ValueError("Unknown number coding {}".
             format(coding))
 
-def decode(f, dim=ndim, coding=coding):
-    if ndim > 1:
+def decode(f, dim=parameters.ndim, coding=parameters.coding):
+    if dim > 1:
         if isinstance(f, str):
-            f = [f[i:i+62] for i in range(ndim)]
+            f = [f[i:i+62] for i in range(dim)]
     if coding == 'bin':
         return bin_to_double(f)
     elif coding == 'gray':

@@ -1,5 +1,6 @@
 import random
-import parameters
+# import parameters
+from parameters_new import parameters
 from utils import similarity, bin_to_double
 from crossover import crossover
 from mutation import mutation

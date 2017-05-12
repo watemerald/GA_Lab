@@ -1,4 +1,5 @@
-import parameters
+# import parameters
+from parameters_new import parameters
 import random
 
 def crossover(parent_a, parent_b,
@@ -108,4 +109,4 @@ def n_point_crossover(parent_a, parent_b, p_c = parameters.pc):
             child_a[i] = coded_b[i]
             child_b[i] = coded_a[i]
 
-    return child_a, child_b
+    return
