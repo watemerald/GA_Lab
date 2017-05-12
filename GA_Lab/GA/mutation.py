@@ -3,8 +3,8 @@ import random
 import copy
 
 def mutation(bits,
-            p_m = parameters.pm,
-            type = parameters.mutation):
+            p_m = None,
+            type = None):
     '''Mutation selection
     Selects the appropriate mutation function based on parameters
 
@@ -16,6 +16,10 @@ def mutation(bits,
     Returns:
         The mutated bitarray
     '''
+    if p_m == None:
+        p_m = parameters.pm
+    if type == None:
+        type = parameters.mutation
     # mutation = '1-point'
     # mutation = 'density'
 
@@ -27,7 +31,7 @@ def mutation(bits,
     raise ValueError("Unknown mutation type {}".format(type))
 
 
-def point_mutation(bits, p_m = parameters.pm):
+def point_mutation(bits, p_m = None):
     '''Point mutation
 
     Args:
@@ -37,6 +41,9 @@ def point_mutation(bits, p_m = parameters.pm):
     Returns:
         The mutated bitarray
     '''
+    if p_m == None:
+        p_m = parameters.pm
+
     cat = list(copy.copy(bits))
     if random.random() < p_m:
         length = len(bits)
@@ -45,7 +52,7 @@ def point_mutation(bits, p_m = parameters.pm):
         cat[mutating_bit] = str(1-int(bits[mutating_bit]))
     return ''.join(cat)
 
-def density_mutation(bits, p_m = parameters.pm):
+def density_mutation(bits, p_m = None):
     '''Density mutation
 
     Args:
@@ -55,6 +62,9 @@ def density_mutation(bits, p_m = parameters.pm):
     Returns:
         The mutated bitarray
     '''
+    if p_m == None:
+        p_m = parameters.pm
+
     cat = list(copy.copy(bits))
     length = len(bits)
     for i in range(length):

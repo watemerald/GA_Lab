@@ -54,7 +54,7 @@ def main(optimising_goal=Deb1):
     optimising function {}'''.format(parameters, optimising_goal.__name__))
     global df
 
-    starting_pool = list(generate_population())
+    starting_pool = list(generate_population(dim=parameters.ndim))
 
     # optimising_goal = Deb1
     goal_function = optimising_goal.compute
@@ -161,7 +161,7 @@ def main(optimising_goal=Deb1):
 
         # logger.debug('Run {} - NFE: {} NP: {} PR: {} PA: {} DA {} Time {}'.format(i, goal_function.calls, len(peaks), PR, PA, DA, (ending_time-starting_time)*1000.0))
         if ndim==1:
-            plotting.plot(goal_vector, spv.decoded, spv.fitness, '{} - {}{}.jpg'.format(optimising_goal.__name__, i, uuid1()))
+            plotting.plot(goal_vector, spv.decoded, spv.fitness, '{} - {} {}.jpg'.format(optimising_goal.__name__, i, starting_time))
 
     df.to_csv(data_file)
 
@@ -172,7 +172,6 @@ def cycle(pool, gf, method='worst_among_most_similar'):
     if ndim==1:
         child_a = pd.Series([child_a, dba, gf(dba)])
     else:
-        import pdb; pdb.set_trace()
         child_a = pd.Series([child_a, dba, gf(*dba)])
     child_a.set_axis(0, ('encoded', 'decoded', 'fitness'))
 
@@ -194,9 +193,9 @@ def cycle(pool, gf, method='worst_among_most_similar'):
 
 def parameter_generation():
     n = [500]
-    ndim = [1,2,3,5]
-    pm = [0.1, 0.2]
-    pc = [0.1, 0.2]
+    ndim = [2,3,5,1]
+    pm = [0.1]
+    pc = [0.1]
     coding = ['bin']
     mutation = ['1-point']
     crossover = ['1']

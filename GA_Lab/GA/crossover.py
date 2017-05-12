@@ -3,8 +3,8 @@ from parameters_new import parameters
 import random
 
 def crossover(parent_a, parent_b,
-             p_c = parameters.pc,
-             type = parameters.crossover):
+             p_c = None,
+             type = None):
     '''Crossover selection
 
     Args:
@@ -16,6 +16,10 @@ def crossover(parent_a, parent_b,
     Returns:
         The resulting children
     '''
+    if p_c == None:
+        p_c = parameters.pc
+    if type == None:
+        type = parameters.crossover
 
     if type == '1':
         return point_crossover(parent_a, parent_b, p_c)
@@ -31,7 +35,7 @@ def crossover(parent_a, parent_b,
     # crossover = '2'
     # crossover = 'n'
 
-def point_crossover(parent_a, parent_b, p_c = parameters.pc):
+def point_crossover(parent_a, parent_b, p_c = None):
     '''Point crossover
 
     Args:
@@ -42,6 +46,9 @@ def point_crossover(parent_a, parent_b, p_c = parameters.pc):
     Returns:
         The resulting children
     '''
+    if p_c == None:
+        p_c = parameters.pc
+
     coded_a = parent_a.encoded
     coded_b = parent_b.encoded
 
@@ -57,7 +64,7 @@ def point_crossover(parent_a, parent_b, p_c = parameters.pc):
 
     return coded_a, coded_b
 
-def two_point_crossover(parent_a, parent_b, p_c = parameters.pc):
+def two_point_crossover(parent_a, parent_b, p_c = None):
     '''2 Point crossover
 
     Args:
@@ -68,6 +75,9 @@ def two_point_crossover(parent_a, parent_b, p_c = parameters.pc):
     Returns:
         The resulting children
     '''
+    if p_c == None:
+        p_c = parameters.pc
+
     coded_a = parent_a.encoded
     coded_b = parent_b.encoded
 
@@ -84,7 +94,9 @@ def two_point_crossover(parent_a, parent_b, p_c = parameters.pc):
 
     return coded_a, coded_b
 
-def n_point_crossover(parent_a, parent_b, p_c = parameters.pc):
+def n_point_crossover(parent_a, parent_b, p_c = None):
+    if p_c == None:
+        p_c = parameters.pc
     coded_a = parent_a.encoded
     coded_b = parent_b.encoded
 

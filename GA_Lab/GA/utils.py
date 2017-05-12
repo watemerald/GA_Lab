@@ -8,7 +8,9 @@ import pandas as pd
 import numpy as np
 
 
-def similarity(a,b, d_m = parameters.distance_measure):
+def similarity(a,b, d_m = None):
+    if d_m == None:
+        d_m = parameters.distance_measure
     # import pdb; pdb.set_trace()
     if d_m == 'euclidean':
         if isinstance(a, str):
@@ -49,7 +51,12 @@ bin_to_double = np.vectorize(bin_to_double)
 bin_to_gray = np.vectorize(bin_to_gray)
 gray_to_bin = np.vectorize(gray_to_bin)
 
-def encode(f, dim=parameters.ndim, coding=parameters.coding):
+def encode(f, dim=None, coding=None):
+    if dim == None:
+        dim = parameters.ndim
+    if coding == None:
+        coding = parameters.coding
+
     if coding == 'bin':
         return double_to_bin(f)
     elif coding == 'gray':
@@ -58,7 +65,12 @@ def encode(f, dim=parameters.ndim, coding=parameters.coding):
         raise ValueError("Unknown number coding {}".
             format(coding))
 
-def decode(f, dim=parameters.ndim, coding=parameters.coding):
+def decode(f, dim=None, coding=None):
+    if dim == None:
+        dim = parameters.ndim
+    if coding == None:
+        coding = parameters.coding
+
     if dim > 1:
         if isinstance(f, str):
             f = [f[i:i+62] for i in range(dim)]

@@ -7,9 +7,9 @@ from mutation import mutation
 import pandas as pd
 
 def form_children(population,
-                  c_s = parameters.cs,
-                  c_f = parameters.cf,
-                  s = parameters.s):
+                  c_s = None,
+                  c_f = None,
+                  s = None):
     '''Select a pair of parents and form children
 
     Args:
@@ -18,6 +18,12 @@ def form_children(population,
     Returns:
         The resulting children
     '''
+    if c_s == None:
+        c_s = parameters.cs
+    if c_f == None:
+        c_f = parameters.cf
+    if s == None:
+        s = parameters.s
     # import pdb; pdb.set_trace();
     # parent_a = random.choice(population)
 
@@ -48,8 +54,8 @@ def form_children(population,
 def worst_among_most_similar(population,
                             child,
                             goal_function,
-                            c_f = parameters.cf,
-                            s = parameters.s):
+                            c_f = None,
+                            s = None):
     '''Create new population pool according to the worst among the most similar strategy.
 
     Args:
@@ -60,6 +66,10 @@ def worst_among_most_similar(population,
     Returns:
         The resulting population
     '''
+    if c_f == None:
+        c_f = parameters.cf
+    if s == None:
+        s = parameters.s
     # parent_A = random.choice(population)
     #
     # crowding_selection_group = random.sample(population, s)
@@ -91,8 +101,8 @@ def worst_among_most_similar(population,
 def most_similar_among_worst(population,
                             child,
                             goal_function,
-                            c_f = parameters.cf,
-                            s = parameters.s):
+                            c_f = None,
+                            s = None):
     '''Create new population pool according to the most similar among the worst strategy.
 
     Args:
@@ -103,6 +113,10 @@ def most_similar_among_worst(population,
     Returns:
         The resulting population
     '''
+    if c_f == None:
+        c_f = parameters.cf
+    if s == None:
+        s = parameters.s
     # parent_A = random.choice(population)
     #
     # crowding_selection_group = random.sample(population, s)
