@@ -219,7 +219,7 @@ def population_dict(pool, goal_function):
 if __name__ == '__main__':
     params_to_test = parameter_generation()
 
-    for (n, ndim, pm, pc, coding, mutation, crossover, distance_measure, cs, cf, s, method) if params_to_test:
+    for (n, ndim, pm, pc, coding, mutation, crossover, distance_measure, cs, cf, s, method) in params_to_test:
         parameters.N = n
         parameters.ndim = ndim
         parameters.pm = pm
