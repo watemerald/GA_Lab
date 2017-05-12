@@ -4,7 +4,7 @@ from mutation import mutation
 from crossover import crossover
 from selection import *
 from utils import *
-from TestFunctions import Deb1
+from TestFunctions import Deb1, Deb2, Deb3, Deb4
 import logging
 import plotting
 import pandas as pd
