@@ -18,7 +18,7 @@ from parameters_new import parameters
 
 from bokeh.plotting import figure, output_file, show
 
-__number_of_runs = 3
+__number_of_runs = 10
 __max_finess_evaluations = 20_000_000
 __sigma = 0.0001
 
@@ -41,12 +41,13 @@ logger.addHandler(ch)
 ndim = parameters.ndim
 
 data_file = 'data.csv'
-if not os.path.isfile(data_file):
+if os.path.isfile(data_file):
+    df = pd.DataFrame.from_csv(data_file)
+else:
     with open(data_file, 'w+') as f:
         pass
+    df = pd.DataFrame()
 
-# df = pd.DataFrame.from_csv(data_file)
-df = pd.DataFrame()
 
 def main(optimising_goal=Deb1):
     logger.info('''Starting the main loop with parameters {} \n
@@ -232,7 +233,9 @@ if __name__ == '__main__':
         parameters.s = s
         parameters.method = method
 
-        main()
+        main(Deb1)
+        main(Deb4)
+
 
 
     # main()
